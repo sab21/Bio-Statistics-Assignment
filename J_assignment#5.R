@@ -25,7 +25,7 @@ left;right #Answer
 #For margin of error = .0001 Find n?
 me <- .0001 #sd/sqrt(n) = me/t-stats.995 => n = (t-stat.995 * sd / me)^2
 n1 = ceiling((qnorm(.995) * sd / me)^2) #ceiling to cap the value of sample to upper end
-print(n1)
+print(n1)#Ans
 
 #1.c
 pow <- power.t.test(n = 5, delta = (sampleMean-10), sd = .0002, sig.level = 0.01,power = NULL,type = "one.sample")
@@ -34,7 +34,7 @@ pow$power #Answer
 
 #1.d
 pow2 <- power.t.test(n = NULL, delta = (sampleMean-10), sd = .0001, sig.level = 0.02,power = .8,type = "one.sample")
-pow2$n
+pow2$n#Ans
 
 
 
@@ -117,14 +117,14 @@ t <- qnorm(.975)
 me <- t*se
 left <- m-me
 right <- m+me
-left;right
+left;right #Ans
 
 
 
 #b) How large a sample would you need for a margin of error for the nuclear diameter in
   #U2OS cells to be 0.05 um for the 95% CI?
 me <- .05
-n1 <- ceiling((qnorm(.975)*sd/me)^2)
+n1 <- ceiling((qnorm(.975)*sd/me)^2)#Ans
 
 #c) For the MCF-7 cells, find a 95% CI for nuclear diameter.
 n <- 42
@@ -135,11 +135,11 @@ t <- qnorm(.975)
 me <- t*se
 left <- m-me
 right <- m+me
-left;right
+left;right#Ans
 
 #d) How large a sample is needed in this case (MCF-7 cells) to have a margin of error of 0.1um?
 me <- .1
-n1 <- ceiling((qnorm(.975)*sd/me)^2)
+n1 <- ceiling((qnorm(.975)*sd/me)^2)#Ans
 
 
 #e) Suppose you wish to distinguish which kind of cells you have based on their size, with
@@ -152,4 +152,6 @@ sd2 <- .35
 boundary <- (m1+m2)/2 #upper boundary for U20S and lower boundary for MCF7
 
 nU20S <- ceiling((qnorm(.975)*sd1/abs(boundary-m1))^2) 
+nU20S #number of sample for U20S 
 nMCF7 <- ceiling((qnorm(.975)*sd2/abs(boundary-m2))^2)
+nMCF7 #Ans for MCF7
