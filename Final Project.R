@@ -327,3 +327,107 @@ boxplot(data$PDIAB~data$METRO*data$DegOB)
 #For Non Metro counties lower degree of Obesity have higher obesity rate
 #whereas highest degree of obesity have somewhat similar diabetes rate irrespective of 
 #Metro status of counties
+
+#Numerical 
+size <- with(data,aggregate(PDIAB,list(Metro = METRO,Obesity=DegOB),length));size
+mean <- with(data,aggregate(PDIAB,list(Metro = METRO,Obesity=DegOB),mean));mean
+sd <- with(data,aggregate(PDIAB,list(Metro = METRO,Obesity=DegOB),sd));sd
+tab <- cbind(size,mean = mean[,3],sd = sd[,3]);tab
+
+interaction.plot(data$DegOB,data$METRO,data$PDIAB, lwd = 2, col = "red", ylab = "Diabetes Rate (Mean)")
+
+#Two Way ANOVA
+d.aov <- aov(data$PDIAB~data$DegOB*data$METRO)
+summary(d.aov)
+#P Value of both Degreeof obesity and Metro is coming stastically significant as 
+#in case of One way anova of each
+
+#P value of their interaction is not coming significant that means there is 
+#no significant interarction between two groups
+
+
+#More with Plots
+attach(data)
+with(data,interaction.plot(DegOB,METRO,PDIAB, lwd = 4, col = "red",
+                           ylim = c(8,12),ylab = "Diabetes Rate (Mean)"))
+points(DegOB,aov(PDIAB~DegOB*METRO)$fit, pch=19, col=1, cex=1.5)  # The full two-way ANOVA model
+points(DegOB,aov(PDIAB~DegOB+METRO)$fit, pch=19, col=2, cex=1.5)  # No interaction term
+points(DegOB,aov(PDIAB~DegOB)$fit, pch=19, col=3, cex=1.5)    # One-way ANOVA using DegOB
+points(DegOB,aov(PDIAB~METRO)$fit, pch=19, col=4, cex=1.5)   # One-way ANOVA using METRO
+
+
+# Also look at the residuals
+par(mfrow=c(3,2))
+plot(DegOB,aov(PDIAB~DegOB*METRO)$res, col=2, lwd=1, pch=19,
+     main="Residuals for Full Model with Interactions")    # Residuals for full two-way model - gender
+plot(METRO,aov(PDIAB~DegOB*METRO)$res, col=2, lwd=1, pch=19,
+     main="Residuals for Full Model with Interactions")     # Residuals for full two-way model - group
+plot(DegOB,aov(PDIAB~DegOB+METRO)$res, col=2, lwd=1, pch=19,
+     main="Residuals for Full Model without Interactions")    # No interaction term - gender
+plot(METRO,aov(PDIAB~DegOB+METRO)$res, col=2, lwd=1, pch=19,
+     main="Residuals for Full Model without Interactions")     # No interaction term - group
+plot(DegOB,aov(PDIAB~DegOB)$res, col=2, lwd=1, pch=19,
+     main="Residuals for One-Way ANOVA on DegOB")            # One-way ANOVA on group
+plot(METRO,aov(PDIAB~METRO)$res, col=2, lwd=1, pch=19,
+     main="Residuals for One-Way ANOVA on METRO")          # One-way ANOVA on group
+par(mfrow=c(1,1))
+#I don't know how to interpret above graphs - 
+
+
+#Qn 6
+#We will now examine other relationships between variables. Determine if there
+#is a relationship between counties that lost population and whether they were
+#metropolitan. The table() function might be useful here
+
+attach(data)
+table(PLOSS,METRO)
+
+library(gmodels)
+CrossTable(PLOSS,METRO)
+#7% of Non Metro Lost population whereas 11.5% of Metro counties lost population during
+# the period
+plot(PLOSS,METRO,xlab="Population Loss", ylab = "Metro", col = c(2,4))
+chisq.test(PLOSS,METRO)
+#P-Value is not stastically significant
+#So we cannot conclude that there is any significant relation between any 
+#PLOSS and Metro 
+
+
+#Qn 7
+#Often times, rural areas have higher income levels. Determine if there is a 
+#relationship between income and whether they were metropolitan. Do this two
+#different ways: using INC and HighINC. Discuss whether one is preferable to the other.
+
+#with HighINC
+table(HighINC,METRO)
+CrossTable(HighINC,METRO)
+#31.6% of Non Metro counties comes under high income category
+#whereas 84.6% of Metro counties comes under high income category
+plot(HighINC,METRO, xlab="High Income", ylab = "Metro", col = c(2,4))
+chisq.test(HighINC,METRO)
+#P value is significant - reject Null Hypotheses
+#We can conclude that there is significant relation between HignINC and Metro
+
+
+#With INC
+boxplot(INC~METRO)
+
+
+# Get some stats on the groups
+size <- tapply(data$INC, data$METRO, length)
+m <- tapply(data$INC, data$METRO, mean)
+# Check the ranges of sample standard deviations
+sd <- tapply(data$INC, data$METRO, sd)
+
+tab <- rbind(size=size, mean = m, sd=sd);tab
+
+#Anova
+
+inc.aov <- aov(INC~ METRO, data)
+summary(inc.aov)
+#p value is stastically significant so we can reject HO
+#We can conclude that there is relation between InC and Metro
+
+fit <- lm(INC~METRO,data)
+summary(fit)
+#logistic regression p value is significant
